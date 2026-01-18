@@ -1,0 +1,30 @@
+{
+  "name": "product-inventory-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mohammad-Al-Bast/Product-Inventory-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Mohammad-Al-Bast/Product-Inventory-System/issues"
+  },
+  "homepage": "https://github.com/Mohammad-Al-Bast/Product-Inventory-System#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "mongoose": "^9.1.4"
+  }
+}

@@ -1,0 +1,66 @@
+<!-- Add/Edit Supplier Modal -->
+<div id="supplierModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Supplier</h2>
+            <button class="modal-close" onclick="closeSupplierModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="supplierForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="supplierName">Supplier Name *</label>
+                    <input type="text" id="supplierName" name="supplierName" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierEmail">Email *</label>
+                    <input type="email" id="supplierEmail" name="supplierEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierPhone">Phone *</label>
+                    <input type="tel" id="supplierPhone" name="supplierPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierWebsite">Website</label>
+                    <input type="url" id="supplierWebsite" name="supplierWebsite">
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label for="supplierAddress">Address *</label>
+                <input type="text" id="supplierAddress" name="supplierAddress" required>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="supplierCity">City *</label>
+                    <input type="text" id="supplierCity" name="supplierCity" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierState">State *</label>
+                    <input type="text" id="supplierState" name="supplierState" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierZip">ZIP Code *</label>
+                    <input type="text" id="supplierZip" name="supplierZip" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierCountry">Country *</label>
+                    <input type="text" id="supplierCountry" name="supplierCountry" value="USA" required>
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label for="supplierNotes">Notes</label>
+                <textarea id="supplierNotes" name="supplierNotes" rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeSupplierModal()">Cancel</button>
+                <button type="submit" class="btn-primary" id="saveSupplierBtn">
+                    <i class="fas fa-save"></i> Save Supplier
+                </button>
+                <button type="button" class="btn-danger" id="deleteSupplierBtn" style="display: none;" onclick="confirmDeleteSupplier()">
+                    <i class="fas fa-trash"></i> Delete Supplier
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,291 @@
+<% layout('layouts/main') %>
+<% title = 'Suppliers - Product Inventory System'; pageScript = '/js/suppliers.js'; %>
+
+    <!-- Sidebar Navigation -->
+    <%- include('partials/sidebar', { active: 'suppliers' }) %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <%- include('partials/header', { pageTitle: 'Suppliers', pageSubtitle: 'Manage your supplier network' }) %>
+
+        <!-- Suppliers Controls -->
+        <section class="controls-section">
+            <div class="controls-left">
+                <div class="search-box-large">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="supplierSearch" placeholder="Search suppliers by name...">
+                </div>
+                <div class="filter-group">
+                    <select id="cityFilter" class="filter-select">
+                        <option value="">All Cities</option>
+                        <option value="new-york">New York</option>
+                        <option value="los-angeles">Los Angeles</option>
+                        <option value="chicago">Chicago</option>
+                        <option value="houston">Houston</option>
+                        <option value="miami">Miami</option>
+                    </select>
+                    <button class="btn-filter" id="clearFilters">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+            <div class="controls-right">
+                <button class="btn-primary" id="addSupplierBtn">
+                    <i class="fas fa-plus"></i> Add Supplier
+                </button>
+            </div>
+        </section>
+
+        <!-- Suppliers Grid -->
+        <section class="suppliers-grid" id="suppliersGrid">
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(1)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(1)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>Tech Supplies Co.</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Tech Street, New York, NY 10001</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@techsupplies.com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">24</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(2)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(2)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>ElectroParts Ltd.</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>456 Electronic Ave, Los Angeles, CA 90001</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 234-5678</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@electroparts. com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">18</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(3)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(3)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>KeyBoard Masters</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>789 Input Blvd, Chicago, IL 60601</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 345-6789</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>sales@keyboardmasters.com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(4)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(4)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>Vision Tech</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>321 Camera Rd, Houston, TX 77001</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 456-7890</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>support@visiontech.com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(5)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(5)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>Global Components</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>555 Parts Lane, Miami, FL 33101</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 567-8901</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>orders@globalcomponents.com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">31</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <div class="supplier-avatar">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn-icon edit" onclick="editSupplier(6)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteSupplier(6)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="supplier-body">
+                    <h3>Wire & Cable Co.</h3>
+                    <div class="supplier-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>888 Connect St, Chicago, IL 60602</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 678-9012</span>
+                    </div>
+                    <div class="supplier-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@wireandcable.com</span>
+                    </div>
+                    <div class="supplier-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">9</span>
+                            <span class="stat-label">Products</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value active">Active</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/modals/supplierModal') %>
+
+    <%- include('partials/modals/deleteModal') %>

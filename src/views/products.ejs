@@ -1,0 +1,214 @@
+<% layout('layouts/main') %>
+<% title = 'Products - Product Inventory System'; pageScript = '/js/products.js'; %>
+
+    <!-- Sidebar Navigation -->
+    <%- include('partials/sidebar', { active: 'products' }) %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <%- include('partials/header', { pageTitle: 'Products', pageSubtitle: 'Manage your product inventory' }) %>
+
+        <!-- Products Controls -->
+        <section class="controls-section">
+            <div class="controls-left">
+                <div class="search-box-large">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Search products by name or SKU...">
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="peripherals">Peripherals</option>
+                        <option value="cables">Cables & Adapters</option>
+                    </select>
+                    <select id="supplierFilter" class="filter-select">
+                        <option value="">All Suppliers</option>
+                        <option value="tech-supplies">Tech Supplies Co.</option>
+                        <option value="electroparts">ElectroParts Ltd.</option>
+                        <option value="keyboard-masters">KeyBoard Masters</option>
+                        <option value="vision-tech">Vision Tech</option>
+                    </select>
+                    <button class="btn-filter" id="clearFilters">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+            <div class="controls-right">
+                <button class="btn-primary" id="addProductBtn">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+        </section>
+
+        <!-- Products Table -->
+        <section class="table-section">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>SKU</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Supplier</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/4f46e5/ffffff?text=P" alt="Product">
+                                    <span>Wireless Mouse</span>
+                                </div>
+                            </td>
+                            <td>WM-001</td>
+                            <td><span class="category-badge electronics">Electronics</span></td>
+                            <td>$29.99</td>
+                            <td><span class="quantity-badge low">5</span></td>
+                            <td>Tech Supplies Co.</td>
+                            <td><span class="status-badge low-stock">Low Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(1)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(1)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/10b981/ffffff?text=P" alt="Product">
+                                    <span>USB-C Hub</span>
+                                </div>
+                            </td>
+                            <td>UH-022</td>
+                            <td><span class="category-badge accessories">Accessories</span></td>
+                            <td>$49.99</td>
+                            <td><span class="quantity-badge good">45</span></td>
+                            <td>ElectroParts Ltd.</td>
+                            <td><span class="status-badge in-stock">In Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(2)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(2)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/f59e0b/ffffff?text=P" alt="Product">
+                                    <span>Mechanical Keyboard</span>
+                                </div>
+                            </td>
+                            <td>MK-015</td>
+                            <td><span class="category-badge peripherals">Peripherals</span></td>
+                            <td>$89.99</td>
+                            <td><span class="quantity-badge low">8</span></td>
+                            <td>KeyBoard Masters</td>
+                            <td><span class="status-badge low-stock">Low Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(3)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(3)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/ec4899/ffffff?text=P" alt="Product">
+                                    <span>Webcam HD</span>
+                                </div>
+                            </td>
+                            <td>WC-033</td>
+                            <td><span class="category-badge electronics">Electronics</span></td>
+                            <td>$79.99</td>
+                            <td><span class="quantity-badge good">32</span></td>
+                            <td>Vision Tech</td>
+                            <td><span class="status-badge in-stock">In Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(4)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(4)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/6366f1/ffffff?text=P" alt="Product">
+                                    <span>USB-C Cable</span>
+                                </div>
+                            </td>
+                            <td>UC-045</td>
+                            <td><span class="category-badge cables">Cables & Adapters</span></td>
+                            <td>$12.99</td>
+                            <td><span class="quantity-badge low">12</span></td>
+                            <td>ElectroParts Ltd.</td>
+                            <td><span class="status-badge low-stock">Low Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(5)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(5)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    <img src="https://via.placeholder.com/40x40/8b5cf6/ffffff?text=P" alt="Product">
+                                    <span>Laptop Stand</span>
+                                </div>
+                            </td>
+                            <td>LS-089</td>
+                            <td><span class="category-badge accessories">Accessories</span></td>
+                            <td>$39.99</td>
+                            <td><span class="quantity-badge low">15</span></td>
+                            <td>Tech Supplies Co.</td>
+                            <td><span class="status-badge low-stock">Low Stock</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit" onclick="editProduct(6)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteProduct(6)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/modals/productModal') %>
+
+    <%- include('partials/modals/deleteModal') %> 

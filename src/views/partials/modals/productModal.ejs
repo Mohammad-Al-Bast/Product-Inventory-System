@@ -1,0 +1,64 @@
+<!-- Add/Edit Product Modal -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Product</h2>
+            <button class="modal-close" onclick="closeProductModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="productForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="productName">Product Name *</label>
+                    <input type="text" id="productName" name="productName" required>
+                </div>
+                <div class="form-group">
+                    <label for="productSKU">SKU *</label>
+                    <input type="text" id="productSKU" name="productSKU" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category *</label>
+                    <select id="productCategory" name="productCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="peripherals">Peripherals</option>
+                        <option value="cables">Cables & Adapters</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price *</label>
+                    <input type="number" id="productPrice" name="productPrice" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="productQuantity">Quantity *</label>
+                    <input type="number" id="productQuantity" name="productQuantity" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="productSupplier">Supplier *</label>
+                    <select id="productSupplier" name="productSupplier" required>
+                        <option value="">Select Supplier</option>
+                        <option value="tech-supplies">Tech Supplies Co. </option>
+                        <option value="electroparts">ElectroParts Ltd.</option>
+                        <option value="keyboard-masters">KeyBoard Masters</option>
+                        <option value="vision-tech">Vision Tech</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label for="productDescription">Description</label>
+                <textarea id="productDescription" name="productDescription" rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+                <button type="submit" class="btn-primary" id="saveProductBtn">
+                    <i class="fas fa-save"></i> Save Product
+                </button>
+                <button type="button" class="btn-danger" id="deleteProductBtn" style="display: none;" onclick="confirmDeleteProduct()">
+                    <i class="fas fa-trash"></i> Delete Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
