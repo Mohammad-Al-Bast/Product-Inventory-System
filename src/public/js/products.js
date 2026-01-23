@@ -159,27 +159,32 @@ function openAddProductModal() {
 
 // Edit product
 function editProduct(id) {
-	const product = products.find((p) => String(p.id) === String(id));
-	if (!product) return;
+	try {
+		const product = products.find((p) => String(p.id) === String(id));
+		if (!product) return;
 
-	currentProductId = String(id);
-	const modalTitle = document.getElementById("modalTitle");
-	if (modalTitle) modalTitle.textContent = "Edit Product";
-	document.getElementById("productId").value = product.id || "";
-	document.getElementById("productName").value = product.name || "";
-	document.getElementById("productSKU").value = product.sku || "";
-	document.getElementById("productCategory").value = product.category || "";
-	document.getElementById("productPrice").value = product.price || 0;
-	document.getElementById("productQuantity").value = product.quantity || 0;
-	document.getElementById("productSupplier").value = getSupplierValue(
-		product.supplier || "",
-	);
-	document.getElementById("productDescription").value =
-		product.description || "";
-	const deleteBtn = document.getElementById("deleteProductBtn");
-	if (deleteBtn) deleteBtn.style.display = "inline-flex";
-	const productModal = document.getElementById("productModal");
-	if (productModal) productModal.classList.add("active");
+		currentProductId = String(id);
+		const modalTitle = document.getElementById("modalTitle");
+		if (modalTitle) modalTitle.textContent = "Edit Product";
+		document.getElementById("productId").value = product.id || "";
+		document.getElementById("productName").value = product.name || "";
+		document.getElementById("productSKU").value = product.sku || "";
+		document.getElementById("productCategory").value = product.category || "";
+		document.getElementById("productPrice").value = product.price || 0;
+		document.getElementById("productQuantity").value = product.quantity || 0;
+		document.getElementById("productSupplier").value = getSupplierValue(
+			product.supplier || "",
+		);
+		document.getElementById("productDescription").value =
+			product.description || "";
+		const deleteBtn = document.getElementById("deleteProductBtn");
+		if (deleteBtn) deleteBtn.style.display = "inline-flex";
+		const productModal = document.getElementById("productModal");
+		if (productModal) productModal.classList.add("active");
+	} catch (err) {
+		console.error("Error editing product:", err);
+		alert("Failed to edit product. Please try again.");
+	}
 }
 
 // Delete product (open confirm)
@@ -213,7 +218,7 @@ async function handleProductSubmit(e) {
 	const description =
 		(document.getElementById("productDescription") || {}).value || "";
 
-	const payload = new FormData();
+	const payload = new URLSearchParams();
 	payload.append("id", id);
 	payload.append("productName", name);
 	payload.append("productSKU", sku);
@@ -231,7 +236,10 @@ async function handleProductSubmit(e) {
 				{
 					method: "POST",
 					body: payload,
-					headers: { Accept: "application/json" },
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
 				},
 			);
 			const data = await resp.json();
@@ -243,7 +251,10 @@ async function handleProductSubmit(e) {
 			const resp = await fetch(`/products/add`, {
 				method: "POST",
 				body: payload,
-				headers: { Accept: "application/json" },
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
 			});
 			const data = await resp.json();
 			if (data && data.success && data.product) {
@@ -252,6 +263,7 @@ async function handleProductSubmit(e) {
 		}
 	} catch (err) {
 		console.error(err);
+		alert("Failed to save product. Please try again.");
 	}
 
 	loadProducts();
