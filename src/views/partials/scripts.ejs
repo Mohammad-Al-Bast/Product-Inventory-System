@@ -3,4 +3,4 @@
 <% if (pageScript) { %>
     <script src="<%= pageScript %>"></script>
 <% } %>
-<%- scriptsExtra || '' %>
+<%- (typeof scriptsExtra !== 'undefined' ? scriptsExtra : '') %>
