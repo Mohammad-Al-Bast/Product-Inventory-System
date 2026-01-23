@@ -1,6 +1,6 @@
 // Products Page JavaScript
 
-let products = [
+let products = window.__PRODUCTS__ || [
 	{
 		id: 1,
 		name: "Wireless Mouse",
@@ -35,41 +35,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Initialize event listeners
 function initializeEventListeners() {
-	// Add product button
 	const addProductBtn = document.getElementById("addProductBtn");
-	if (addProductBtn) {
+	if (addProductBtn)
 		addProductBtn.addEventListener("click", openAddProductModal);
-	}
 
-	// Product form submit
 	const productForm = document.getElementById("productForm");
-	if (productForm) {
+	if (productForm)
 		productForm.addEventListener("submit", handleProductSubmit);
-	}
 
-	// Search functionality
 	const productSearch = document.getElementById("productSearch");
-	if (productSearch) {
-		productSearch.addEventListener("input", handleSearch);
-	}
+	if (productSearch) productSearch.addEventListener("input", handleSearch);
 
-	// Filter functionality
 	const categoryFilter = document.getElementById("categoryFilter");
 	const supplierFilter = document.getElementById("supplierFilter");
 
-	if (categoryFilter) {
-		categoryFilter.addEventListener("change", handleFilter);
-	}
+	if (categoryFilter) categoryFilter.addEventListener("change", handleFilter);
+	if (supplierFilter) supplierFilter.addEventListener("change", handleFilter);
 
-	if (supplierFilter) {
-		supplierFilter.addEventListener("change", handleFilter);
-	}
-
-	// Clear filters
 	const clearFiltersBtn = document.getElementById("clearFilters");
-	if (clearFiltersBtn) {
+	if (clearFiltersBtn)
 		clearFiltersBtn.addEventListener("click", clearFilters);
-	}
 }
 
 // Load products into table
@@ -86,21 +71,21 @@ function loadProducts(filteredProducts = null) {
             <td>
                 <div class="product-cell">
                     <img src="https://via.placeholder.com/40x40/4f46e5/ffffff?text=P" alt="Product">
-                    <span>${product.name}</span>
+                    <span>${escapeHtml(product.name)}</span>
                 </div>
             </td>
-            <td>${product.sku}</td>
-            <td><span class="category-badge ${product.category}">${capitalizeFirst(product.category)}</span></td>
-            <td>$${product.price.toFixed(2)}</td>
-            <td><span class="quantity-badge ${product.quantity < 20 ? "low" : "good"}">${product.quantity}</span></td>
-            <td>${product.supplier}</td>
-            <td><span class="status-badge ${product.status}">${product.status.replace("-", " ")}</span></td>
+            <td>${escapeHtml(product.sku || "")}</td>
+            <td><span class="category-badge ${escapeHtml(product.category || "")}">${capitalizeFirst(product.category || "")}</span></td>
+            <td>$${(Number(product.price) || 0).toFixed(2)}</td>
+            <td><span class="quantity-badge ${Number(product.quantity) < 20 ? "low" : "good"}">${escapeHtml(String(product.quantity || 0))}</span></td>
+            <td>${escapeHtml(product.supplier || "")}</td>
+            <td><span class="status-badge ${escapeHtml(product.status || "")}">${(product.status || "").replace("-", " ")}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-icon edit" onclick="editProduct(${product.id})">
+                    <button class="btn-icon edit" onclick="editProduct('${String(product.id).replace(/'/g, "\\'")}')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon delete" onclick="deleteProduct(${product.id})">
+                    <button class="btn-icon delete" onclick="deleteProduct('${String(product.id).replace(/'/g, "\\'")}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -113,11 +98,15 @@ function loadProducts(filteredProducts = null) {
 
 // Search products
 function handleSearch(e) {
-	const searchTerm = e.target.value.toLowerCase();
+	const searchTerm = (e.target.value || "").toLowerCase();
 	const filtered = products.filter(
 		(product) =>
-			product.name.toLowerCase().includes(searchTerm) ||
-			product.sku.toLowerCase().includes(searchTerm),
+			String(product.name || "")
+				.toLowerCase()
+				.includes(searchTerm) ||
+			String(product.sku || "")
+				.toLowerCase()
+				.includes(searchTerm),
 	);
 	loadProducts(filtered);
 }
@@ -131,9 +120,8 @@ function handleFilter() {
 
 	let filtered = products;
 
-	if (categoryFilter) {
+	if (categoryFilter)
 		filtered = filtered.filter((p) => p.category === categoryFilter);
-	}
 
 	if (supplierFilter) {
 		const supplierName = getSupplierName(supplierFilter);
@@ -171,19 +159,20 @@ function openAddProductModal() {
 
 // Edit product
 function editProduct(id) {
-	const product = products.find((p) => p.id === id);
+	const product = products.find((p) => String(p.id) === String(id));
 	if (!product) return;
 
-	currentProductId = id;
+	currentProductId = String(id);
 	const modalTitle = document.getElementById("modalTitle");
 	if (modalTitle) modalTitle.textContent = "Edit Product";
-	document.getElementById("productName").value = product.name;
-	document.getElementById("productSKU").value = product.sku;
-	document.getElementById("productCategory").value = product.category;
-	document.getElementById("productPrice").value = product.price;
-	document.getElementById("productQuantity").value = product.quantity;
+	document.getElementById("productId").value = product.id || "";
+	document.getElementById("productName").value = product.name || "";
+	document.getElementById("productSKU").value = product.sku || "";
+	document.getElementById("productCategory").value = product.category || "";
+	document.getElementById("productPrice").value = product.price || 0;
+	document.getElementById("productQuantity").value = product.quantity || 0;
 	document.getElementById("productSupplier").value = getSupplierValue(
-		product.supplier,
+		product.supplier || "",
 	);
 	document.getElementById("productDescription").value =
 		product.description || "";
@@ -193,18 +182,21 @@ function editProduct(id) {
 	if (productModal) productModal.classList.add("active");
 }
 
-// Delete product
+// Delete product (open confirm)
 function deleteProduct(id) {
-	currentProductId = id;
+	currentProductId = String(id);
 	const deleteModalEl = document.getElementById("deleteModal");
 	if (deleteModalEl) deleteModalEl.classList.add("active");
 }
 
 // Handle product form submit
-function handleProductSubmit(e) {
+async function handleProductSubmit(e) {
 	e.preventDefault();
 
-	const id = currentProductId || Date.now();
+	const id =
+		(document.getElementById("productId") || {}).value ||
+		currentProductId ||
+		Date.now().toString();
 	const name = (document.getElementById("productName") || {}).value || "";
 	const sku = (document.getElementById("productSKU") || {}).value || "";
 	const category =
@@ -216,35 +208,57 @@ function handleProductSubmit(e) {
 		(document.getElementById("productQuantity") || {}).value || "0",
 		10,
 	);
-	const supplier = getSupplierName(
-		(document.getElementById("productSupplier") || {}).value || "",
-	);
+	const supplierValue =
+		(document.getElementById("productSupplier") || {}).value || "";
+	const description =
+		(document.getElementById("productDescription") || {}).value || "";
 
-	const formData = {
-		id,
-		name,
-		sku,
-		category,
-		price,
-		quantity,
-		supplier,
-		status: quantity < 20 ? "low-stock" : "in-stock",
-		description:
-			(document.getElementById("productDescription") || {}).value || "",
-	};
+	const payload = new FormData();
+	payload.append("id", id);
+	payload.append("productName", name);
+	payload.append("productSKU", sku);
+	payload.append("productCategory", category);
+	payload.append("productPrice", price);
+	payload.append("productQuantity", quantity);
+	payload.append("productSupplier", supplierValue);
+	payload.append("productDescription", description);
 
-	if (currentProductId) {
-		const index = products.findIndex((p) => p.id === currentProductId);
-		if (index !== -1) products[index] = formData;
-	} else {
-		products.push(formData);
+	try {
+		if (currentProductId) {
+			// update
+			const resp = await fetch(
+				`/products/update/${encodeURIComponent(currentProductId)}`,
+				{
+					method: "POST",
+					body: payload,
+					headers: { Accept: "application/json" },
+				},
+			);
+			const data = await resp.json();
+			if (data && data.success && data.product) {
+				replaceOrAddLocalProduct(data.product);
+			}
+		} else {
+			// create
+			const resp = await fetch(`/products/add`, {
+				method: "POST",
+				body: payload,
+				headers: { Accept: "application/json" },
+			});
+			const data = await resp.json();
+			if (data && data.success && data.product) {
+				replaceOrAddLocalProduct(data.product);
+			}
+		}
+	} catch (err) {
+		console.error(err);
 	}
 
 	loadProducts();
 	closeProductModal();
 }
 
-// Confirm delete product
+// Confirm delete product -> actually open delete modal (used by Save/Delete UI)
 function confirmDeleteProduct() {
 	const productModal = document.getElementById("productModal");
 	if (productModal) productModal.classList.remove("active");
@@ -252,11 +266,31 @@ function confirmDeleteProduct() {
 	if (deleteModalEl) deleteModalEl.classList.add("active");
 }
 
-// Confirm delete
-function confirmDelete() {
-	if (currentProductId) {
-		products = products.filter((p) => p.id !== currentProductId);
-		loadProducts();
+// Confirm delete action
+async function confirmDelete() {
+	if (!currentProductId) return;
+
+	try {
+		const resp = await fetch(
+			`/products/delete/${encodeURIComponent(currentProductId)}`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+				body: JSON.stringify({ id: currentProductId }),
+			},
+		);
+		const data = await resp.json();
+		if (data && data.success) {
+			products = products.filter(
+				(p) => String(p.id) !== String(currentProductId),
+			);
+			loadProducts();
+		}
+	} catch (err) {
+		console.error(err);
 	}
 	closeDeleteModal();
 }
@@ -266,6 +300,40 @@ function closeProductModal() {
 	const productModal = document.getElementById("productModal");
 	if (productModal) productModal.classList.remove("active");
 	currentProductId = null;
+	const productForm = document.getElementById("productForm");
+	if (productForm) productForm.reset();
+}
+
+// Close delete modal
+function closeDeleteModal() {
+	const deleteModalEl = document.getElementById("deleteModal");
+	if (deleteModalEl) deleteModalEl.classList.remove("active");
+	currentProductId = null;
+}
+
+// Helper: add/update local products array
+function replaceOrAddLocalProduct(product) {
+	const normalized = {
+		id:
+			product.id ||
+			product._id ||
+			product._doc?.id ||
+			product._doc?._id ||
+			product._id,
+		name: product.name || "",
+		sku: product.sku || "",
+		category: product.category || "",
+		price: Number(product.price) || 0,
+		quantity: Number(product.quantity) || 0,
+		supplier: product.supplier || "",
+		status: Number(product.quantity) < 20 ? "low-stock" : "in-stock",
+		description: product.description || "",
+	};
+	const idx = products.findIndex(
+		(p) => String(p.id) === String(normalized.id),
+	);
+	if (idx !== -1) products[idx] = normalized;
+	else products.push(normalized);
 }
 
 // Helper functions (page-specific)
@@ -287,4 +355,20 @@ function getSupplierValue(name) {
 		"Vision Tech": "vision-tech",
 	};
 	return suppliers[name] || "";
+}
+
+function capitalizeFirst(str) {
+	if (!str) return "";
+	return String(str).charAt(0).toUpperCase() + String(str).slice(1);
+}
+
+// Minimal HTML-escaping to avoid injecting raw markup into table cells
+function escapeHtml(str) {
+	if (str === undefined || str === null) return "";
+	return String(str)
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
 }
