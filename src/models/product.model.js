@@ -8,12 +8,12 @@ const productSchema = new mongoose.Schema(
 		category: { type: String, required: true },
 		price: { type: Number, required: true },
 		quantity: { type: Number, required: true },
-		supplier_id: { type: Number, required: true },
+		supplier: { type: String, required: true },
 		description: { type: String, required: false },
 	},
 	{ timestamps: true },
 );
 
-const productModel = mongoose.model("Product", productSchema);
+const productModel = mongoose.model("Products", productSchema);
 
 export default productModel;

@@ -5,20 +5,20 @@ import expressEjsLayouts from "express-ejs-layouts";
 
 const app = express();
 const PORT = 3000;
-const connectionString = "mongodb://localhost:27017/library";
+const connectionString = "mongodb://localhost:27017/product-inventory-system";
 
 //middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("src/public"));
 
-//routers
-app.use("/api", productRouter);
-
 app.use(expressEjsLayouts);
 app.set("view engine", "ejs");
 app.set("views", "./src/views");
-app.set("layout", "./layouts/main");
+app.set("layout", "layouts/main");
+
+//routers
+app.use("/products", productRouter);
 
 // Connect to the database
 connectDatabase(connectionString);

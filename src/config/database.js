@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 const connectDatabase = async (connectionString) => {
     try {
         await mongoose.connect(connectionString, {
-            connectTimeoutMS: 10000,
-            serverSelectionTimeoutMS: 10000,
+            connectTimeoutMS: 3000,
+            serverSelectionTimeoutMS: 3000,
         });
         console.log('Database connected successfully');
     } catch (error) {
