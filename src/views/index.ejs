@@ -1,5 +1,14 @@
-<% layout('layouts/main') %>
 <% title = 'Dashboard - Product Inventory System'; pageScript = '/js/dashboard.js'; %>
+
+    <script>
+        // Initialize dashboard data from server
+        window.dashboardData = {
+            totalProducts: <%= stats.totalProducts %>,
+            totalSuppliers: <%= stats.totalSuppliers %>,
+            lowStockItems: <%= stats.lowStockCount %>,
+            inventoryValue: <%= stats.inventoryValue %>
+        };
+    </script>
 
     <!-- Sidebar Navigation -->
     <%- include('partials/sidebar', { active: 'dashboard' }) %>
@@ -16,9 +25,9 @@
                 </div>
                 <div class="stat-details">
                     <h3>Total Products</h3>
-                    <p class="stat-number" id="totalProducts">1,234</p>
+                    <p class="stat-number" id="totalProducts"><%= stats.totalProducts %></p>
                     <span class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 12% from last month
+                        <i class="fas fa-arrow-up"></i> Active inventory
                     </span>
                 </div>
             </div>
@@ -29,9 +38,9 @@
                 </div>
                 <div class="stat-details">
                     <h3>Total Suppliers</h3>
-                    <p class="stat-number" id="totalSuppliers">87</p>
+                    <p class="stat-number" id="totalSuppliers"><%= stats.totalSuppliers %></p>
                     <span class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 5% from last month
+                        <i class="fas fa-arrow-up"></i> Active partners
                     </span>
                 </div>
             </div>
@@ -42,9 +51,10 @@
                 </div>
                 <div class="stat-details">
                     <h3>Low Stock Items</h3>
-                    <p class="stat-number" id="lowStockItems">23</p>
-                    <span class="stat-change negative">
-                        <i class="fas fa-arrow-down"></i> Needs attention
+                    <p class="stat-number" id="lowStockItems"><%= stats.lowStockCount %></p>
+                    <span class="stat-change <%= stats.lowStockCount > 0 ? 'negative' : 'positive' %>">
+                        <i class="fas fa-<%= stats.lowStockCount > 0 ? 'arrow-down' : 'check' %>"></i> 
+                        <%= stats.lowStockCount > 0 ? 'Needs attention' : 'All good' %>
                     </span>
                 </div>
             </div>
@@ -55,9 +65,9 @@
                 </div>
                 <div class="stat-details">
                     <h3>Total Inventory Value</h3>
-                    <p class="stat-number" id="inventoryValue">$456,789</p>
+                    <p class="stat-number" id="inventoryValue">$<%= stats.inventoryValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></p>
                     <span class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 8% from last month
+                        <i class="fas fa-arrow-up"></i> Total value
                     </span>
                 </div>
             </div>
@@ -67,39 +77,29 @@
         <section class="alert-section">
             <div class="section-header">
                 <h2><i class="fas fa-exclamation-circle"></i> Low Stock Alerts</h2>
-                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                <a href="/products" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="alert-list" id="alertList">
-                <div class="alert-item urgent">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
+                <% if (alerts && alerts.length > 0) { %>
+                    <% alerts.forEach(alert => { %>
+                        <div class="alert-item <%= alert.urgency %>">
+                            <div class="alert-icon">
+                                <i class="fas fa-<%= alert.urgency === 'urgent' ? 'exclamation-triangle' : 'exclamation-circle' %>"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4><%= alert.name %> - <%= alert.sku %></h4>
+                                <p>Only <strong><%= alert.quantity %> units</strong> remaining</p>
+                            </div>
+                            <span class="alert-badge <%= alert.urgency %>"><%= alert.urgency === 'urgent' ? 'Urgent' : 'Warning' %></span>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="alert-item">
+                        <div class="alert-content">
+                            <p>No low stock alerts at this time!</p>
+                        </div>
                     </div>
-                    <div class="alert-content">
-                        <h4>Wireless Mouse - SKU001</h4>
-                        <p>Only <strong>5 units</strong> remaining</p>
-                    </div>
-                    <span class="alert-badge urgent">Urgent</span>
-                </div>
-                <div class="alert-item warning">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div class="alert-content">
-                        <h4>USB-C Cable - SKU045</h4>
-                        <p>Only <strong>12 units</strong> remaining</p>
-                    </div>
-                    <span class="alert-badge warning">Warning</span>
-                </div>
-                <div class="alert-item warning">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div class="alert-content">
-                        <h4>Laptop Stand - SKU089</h4>
-                        <p>Only <strong>15 units</strong> remaining</p>
-                    </div>
-                    <span class="alert-badge warning">Warning</span>
-                </div>
+                <% } %>
             </div>
         </section>
 
@@ -107,92 +107,46 @@
         <section class="suggested-section">
             <div class="section-header">
                 <h2><i class="fas fa-star"></i> Suggested Items to Restock</h2>
-                <a href="products.html" class="view-all">View All Products <i class="fas fa-arrow-right"></i></a>
+                <a href="/products" class="view-all">View All Products <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="suggested-grid" id="suggestedGrid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/200x200/4f46e5/ffffff?text=Product" alt="Product">
-                        <span class="product-badge low">Low Stock</span>
-                    </div>
-                    <div class="product-info">
-                        <h3>Wireless Mouse</h3>
-                        <p class="product-sku">SKU:  WM-001</p>
-                        <p class="product-supplier"><i class="fas fa-truck"></i> Tech Supplies Co.</p>
-                        <div class="product-stats">
-                            <span class="product-price">$29.99</span>
-                            <span class="product-quantity low">Qty: 5</span>
+                <% if (suggestedItems && suggestedItems.length > 0) { %>
+                    <% suggestedItems.forEach(product => { %>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://via.placeholder.com/200x200/4f46e5/ffffff?text=<%= encodeURIComponent(product.name.substring(0, 10)) %>" alt="<%= product.name %>">
+                                <span class="product-badge low">Low Stock</span>
+                            </div>
+                            <div class="product-info">
+                                <h3><%= product.name %></h3>
+                                <p class="product-sku">SKU: <%= product.sku %></p>
+                                <p class="product-supplier"><i class="fas fa-truck"></i> <%= product.supplier %></p>
+                                <div class="product-stats">
+                                    <span class="product-price">$<%= product.price.toFixed(2) %></span>
+                                    <span class="product-quantity low">Qty: <%= product.quantity %></span>
+                                </div>
+                                <button class="btn-restock" onclick="window.location.href='/products'">
+                                    <i class="fas fa-plus"></i> Restock
+                                </button>
+                            </div>
                         </div>
-                        <button class="btn-restock">
-                            <i class="fas fa-plus"></i> Restock
-                        </button>
+                    <% }); %>
+                <% } else { %>
+                    <div class="product-card">
+                        <div class="product-info">
+                            <p>All items are well stocked!</p>
+                        </div>
                     </div>
-                </div>
+                <% } %>
 
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/200x200/10b981/ffffff?text=Product" alt="Product">
-                        <span class="product-badge popular">Popular</span>
-                    </div>
-                    <div class="product-info">
-                        <h3>USB-C Hub</h3>
-                        <p class="product-sku">SKU: UH-022</p>
-                        <p class="product-supplier"><i class="fas fa-truck"></i> ElectroParts Ltd.</p>
-                        <div class="product-stats">
-                            <span class="product-price">$49.99</span>
-                            <span class="product-quantity">Qty: 45</span>
-                        </div>
-                        <button class="btn-restock">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/200x200/f59e0b/ffffff?text=Product" alt="Product">
-                        <span class="product-badge low">Low Stock</span>
-                    </div>
-                    <div class="product-info">
-                        <h3>Mechanical Keyboard</h3>
-                        <p class="product-sku">SKU: MK-015</p>
-                        <p class="product-supplier"><i class="fas fa-truck"></i> KeyBoard Masters</p>
-                        <div class="product-stats">
-                            <span class="product-price">$89.99</span>
-                            <span class="product-quantity low">Qty: 8</span>
-                        </div>
-                        <button class="btn-restock">
-                            <i class="fas fa-plus"></i> Restock
-                        </button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/200x200/ec4899/ffffff?text=Product" alt="Product">
-                        <span class="product-badge new">New</span>
-                    </div>
-                    <div class="product-info">
-                        <h3>Webcam HD</h3>
-                        <p class="product-sku">SKU: WC-033</p>
-                        <p class="product-supplier"><i class="fas fa-truck"></i> Vision Tech</p>
-                        <div class="product-stats">
-                            <span class="product-price">$79.99</span>
-                            <span class="product-quantity">Qty: 32</span>
-                        </div>
-                        <button class="btn-restock">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                </div>
             </div>
         </section>
 
         <!-- Recent Transactions -->
         <section class="transactions-section">
             <div class="section-header">
-                <h2><i class="fas fa-exchange-alt"></i> Recent Transactions</h2>
-                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                <h2><i class="fas fa-exchange-alt"></i> Recent Activity</h2>
+                <a href="/products" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="transaction-table">
                 <table>
@@ -206,34 +160,21 @@
                         </tr>
                     </thead>
                     <tbody id="transactionList">
-                        <tr>
-                            <td>2026-01-18 10:30 AM</td>
-                            <td>Wireless Mouse (SKU-001)</td>
-                            <td><span class="type-badge add">Stock Added</span></td>
-                            <td>+50</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2026-01-18 09:15 AM</td>
-                            <td>USB-C Cable (SKU-045)</td>
-                            <td><span class="type-badge remove">Stock Removed</span></td>
-                            <td>-20</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2026-01-17 04:45 PM</td>
-                            <td>Laptop Stand (SKU-089)</td>
-                            <td><span class="type-badge add">Stock Added</span></td>
-                            <td>+30</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2026-01-17 02:20 PM</td>
-                            <td>Mechanical Keyboard (SKU-015)</td>
-                            <td><span class="type-badge remove">Stock Removed</span></td>
-                            <td>-15</td>
-                            <td><span class="status-badge pending">Pending</span></td>
-                        </tr>
+                        <% if (recentTransactions && recentTransactions.length > 0) { %>
+                            <% recentTransactions.forEach(transaction => { %>
+                                <tr>
+                                    <td><%= transaction.date %></td>
+                                    <td><%= transaction.productName %> (<%= transaction.sku %>)</td>
+                                    <td><span class="type-badge <%= transaction.type %>"><%= transaction.type === 'update' ? 'Updated' : transaction.type %></span></td>
+                                    <td><%= transaction.quantity %></td>
+                                    <td><span class="status-badge <%= transaction.status %>"><%= transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) %></span></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" style="text-align: center;">No recent activity</td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
