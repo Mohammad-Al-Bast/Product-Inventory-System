@@ -1,29 +1,42 @@
 <!-- Sidebar Navigation -->
 <aside class="sidebar">
-    <div class="logo">
-        <i class="fas fa-boxes"></i>
-        <h2>Inventory</h2>
-    </div>
-    <nav class="nav-menu">
-        <a href="index.html" class="nav-item <%= active === 'dashboard' ? 'active' : '' %>">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="products.html" class="nav-item <%= active === 'products' ? 'active' : '' %>">
-            <i class="fas fa-box"></i>
-            <span>Products</span>
-        </a>
-        <a href="suppliers.html" class="nav-item <%= active === 'suppliers' ? 'active' : '' %>">
-            <i class="fas fa-truck"></i>
-            <span>Suppliers</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fas fa-exchange-alt"></i>
-            <span>Transactions</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>Low Stock Alerts</span>
-        </a>
-    </nav>
+	<div class="logo">
+		<i class="fas fa-boxes"></i>
+		<h2>Inventory</h2>
+	</div>
+	<nav class="nav-menu">
+		<div class="nav-group">
+			<a
+				href="/"
+				class="nav-item <%= active === 'dashboard' ? 'active' : '' %>"
+			>
+				<i class="fas fa-home"></i>
+				<span>Dashboard</span>
+			</a>
+			<div class="sub-menu">
+				<a href="/#transactions" class="nav-item sub-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>Transactions</span>
+				</a>
+				<a href="/#alerts" class="nav-item sub-item">
+					<i class="fas fa-exclamation-triangle"></i>
+					<span>Low Stock Alerts</span>
+				</a>
+			</div>
+		</div>
+		<a
+			href="/products"
+			class="nav-item <%= active === 'products' ? 'active' : '' %>"
+		>
+			<i class="fas fa-box"></i>
+			<span>Products</span>
+		</a>
+		<a
+			href="/suppliers"
+			class="nav-item <%= active === 'suppliers' ? 'active' : '' %>"
+		>
+			<i class="fas fa-truck"></i>
+			<span>Suppliers</span>
+		</a>
+	</nav>
 </aside>
