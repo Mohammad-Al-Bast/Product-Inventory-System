@@ -17,17 +17,19 @@
                 <div class="filter-group">
                     <select id="categoryFilter" class="filter-select">
                         <option value="">All Categories</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="accessories">Accessories</option>
-                        <option value="peripherals">Peripherals</option>
-                        <option value="cables">Cables & Adapters</option>
+                        <% if (categories && categories.length > 0) { %>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category.name %>"><%= category.name %></option>
+                            <% }); %>
+                        <% } %>
                     </select>
                     <select id="supplierFilter" class="filter-select">
                         <option value="">All Suppliers</option>
-                        <option value="tech-supplies">Tech Supplies Co.</option>
-                        <option value="electroparts">ElectroParts Ltd.</option>
-                        <option value="keyboard-masters">KeyBoard Masters</option>
-                        <option value="vision-tech">Vision Tech</option>
+                        <% if (suppliers && suppliers.length > 0) { %>
+                            <% suppliers.forEach(supplier => { %>
+                                <option value="<%= supplier.name %>"><%= supplier.name %></option>
+                            <% }); %>
+                        <% } %>
                     </select>
                     <button class="btn-filter" id="clearFilters">
                         <i class="fas fa-times"></i> Clear Filters
@@ -70,4 +72,6 @@
 
     <script>
   window.__PRODUCTS__ = <%- JSON.stringify(products || []) %>;
+  window.__CATEGORIES__ = <%- JSON.stringify(categories || []) %>;
+  window.__SUPPLIERS__ = <%- JSON.stringify(suppliers || []) %>;
 </script>

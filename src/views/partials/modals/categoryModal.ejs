@@ -1,0 +1,90 @@
+<!-- Add/Edit Category Modal -->
+<div id="categoryModal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h2 id="modalTitle">Add New Category</h2>
+			<button class="modal-close" onclick="closeCategoryModal()">
+				<i class="fas fa-times"></i>
+			</button>
+		</div>
+		<form id="categoryForm">
+			<div class="form-grid">
+				<div class="form-group">
+					<label for="categoryName">Category Name *</label>
+					<input
+						type="text"
+						id="categoryName"
+						name="categoryName"
+						required
+					/>
+				</div>
+				<div class="form-group">
+					<label for="categoryStatus">Status *</label>
+					<select id="categoryStatus" name="categoryStatus" required>
+						<option value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="categoryColor">Color</label>
+					<input
+						type="color"
+						id="categoryColor"
+						name="categoryColor"
+						value="#3498db"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="categoryIcon">Icon Class</label>
+					<select id="categoryIcon" name="categoryIcon">
+						<option value="fa-tag">Tag</option>
+						<option value="fa-laptop">Laptop</option>
+						<option value="fa-mobile-alt">Mobile</option>
+						<option value="fa-headphones">Headphones</option>
+						<option value="fa-camera">Camera</option>
+						<option value="fa-tv">TV</option>
+						<option value="fa-desktop">Desktop</option>
+						<option value="fa-keyboard">Keyboard</option>
+						<option value="fa-mouse">Mouse</option>
+						<option value="fa-hdd">Storage</option>
+						<option value="fa-microchip">Components</option>
+						<option value="fa-plug">Accessories</option>
+						<option value="fa-gamepad">Gaming</option>
+						<option value="fa-print">Printers</option>
+						<option value="fa-network-wired">Networking</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group full-width">
+				<label for="categoryDescription">Description</label>
+				<textarea
+					id="categoryDescription"
+					name="categoryDescription"
+					rows="4"
+					placeholder="Enter category description..."
+				></textarea>
+			</div>
+			<div class="modal-footer">
+				<button
+					type="button"
+					class="btn-secondary"
+					onclick="closeCategoryModal()"
+				>
+					Cancel
+				</button>
+				<button type="submit" class="btn-primary" id="saveCategoryBtn">
+					<i class="fas fa-save"></i> Save Category
+				</button>
+				<button
+					type="button"
+					class="btn-danger"
+					id="deleteCategoryBtn"
+					style="display: none"
+					onclick="confirmDeleteCategory()"
+				>
+					<i class="fas fa-trash"></i> Delete Category
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,17 +1,18 @@
 import productModel from "../models/product.model.js";
-
-const supplierMap = {
-	"tech-supplies": "Tech Supplies Co.",
-	electroparts: "ElectroParts Ltd.",
-	"keyboard-masters": "KeyBoard Masters",
-	"vision-tech": "Vision Tech",
-};
+import categoryModel from "../models/category.model.js";
+import supplierModel from "../models/supplier.model.js";
 
 const getAllProducts = async (req, res) => {
 	try {
 		const products = await productModel.find().lean();
+		const categories = await categoryModel
+			.find({ status: "active" })
+			.lean();
+		const suppliers = await supplierModel.find().lean();
 		res.render("products", {
 			products,
+			categories,
+			suppliers,
 			info: {
 				title: "Product List",
 			},
@@ -37,12 +38,7 @@ const buildPayloadFromBody = (body) => {
 		category: body.productCategory || body.category || "",
 		price: Number(body.productPrice || body.price) || 0,
 		quantity: Number(body.productQuantity || body.quantity) || 0,
-		supplier:
-			supplierMap[body.productSupplier] ||
-			supplierMap[body.supplier] ||
-			body.productSupplier ||
-			body.supplier ||
-			"",
+		supplier: body.productSupplier || body.supplier || "",
 		description: body.productDescription || body.description || "",
 	};
 	return payload;

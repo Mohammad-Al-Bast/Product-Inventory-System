@@ -1,37 +1,46 @@
 // Products Page JavaScript
 
-let products = window.__PRODUCTS__ || [
-	{
-		id: 1,
-		name: "Wireless Mouse",
-		sku: "WM-001",
-		category: "electronics",
-		price: 29.99,
-		quantity: 5,
-		supplier: "Tech Supplies Co.",
-		status: "low-stock",
-		description: "",
-	},
-	{
-		id: 2,
-		name: "USB-C Hub",
-		sku: "UH-022",
-		category: "accessories",
-		price: 49.99,
-		quantity: 45,
-		supplier: "ElectroParts Ltd.",
-		status: "in-stock",
-		description: "",
-	},
-];
+let products = window.__PRODUCTS__ || [];
+let categories = window.__CATEGORIES__ || [];
+let suppliers = window.__SUPPLIERS__ || [];
 
 let currentProductId = null;
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", function () {
+	populateDropdowns();
 	loadProducts();
 	initializeEventListeners();
 });
+
+// Populate category and supplier dropdowns dynamically
+function populateDropdowns() {
+	// Populate category dropdown in modal
+	const productCategorySelect = document.getElementById("productCategory");
+	if (productCategorySelect) {
+		productCategorySelect.innerHTML =
+			'<option value="">Select Category</option>';
+		categories.forEach((category) => {
+			const option = document.createElement("option");
+			option.value = category.name;
+			option.textContent = category.name;
+			productCategorySelect.appendChild(option);
+		});
+	}
+
+	// Populate supplier dropdown in modal
+	const productSupplierSelect = document.getElementById("productSupplier");
+	if (productSupplierSelect) {
+		productSupplierSelect.innerHTML =
+			'<option value="">Select Supplier</option>';
+		suppliers.forEach((supplier) => {
+			const option = document.createElement("option");
+			option.value = supplier.name;
+			option.textContent = supplier.name;
+			productSupplierSelect.appendChild(option);
+		});
+	}
+}
 
 // Initialize event listeners
 function initializeEventListeners() {
@@ -57,6 +66,25 @@ function initializeEventListeners() {
 		clearFiltersBtn.addEventListener("click", clearFilters);
 }
 
+// Helper function to get category color (returns faded background and solid text color)
+function getCategoryColor(categoryName) {
+	const category = categories.find((c) => c.name === categoryName);
+	const color = category ? category.color : "#6b7280";
+	return { bgColor: hexToRgba(color, 0.15), textColor: color };
+}
+
+// Helper function to convert hex to rgba with opacity
+function hexToRgba(hex, opacity) {
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	if (result) {
+		const r = parseInt(result[1], 16);
+		const g = parseInt(result[2], 16);
+		const b = parseInt(result[3], 16);
+		return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+	}
+	return `rgba(107, 114, 128, ${opacity})`;
+}
+
 // Load products into table
 function loadProducts(filteredProducts = null) {
 	const tbody = document.getElementById("productsTableBody");
@@ -65,8 +93,9 @@ function loadProducts(filteredProducts = null) {
 	const productsToDisplay = filteredProducts || products;
 
 	tbody.innerHTML = productsToDisplay
-		.map(
-			(product) => `
+		.map((product) => {
+			const categoryColors = getCategoryColor(product.category);
+			return `
         <tr>
             <td>
                 <div class="product-cell">
@@ -75,7 +104,7 @@ function loadProducts(filteredProducts = null) {
                 </div>
             </td>
             <td>${escapeHtml(product.sku || "")}</td>
-            <td><span class="category-badge ${escapeHtml(product.category || "")}">${capitalizeFirst(product.category || "")}</span></td>
+            <td><span class="category-badge" style="background-color: ${categoryColors.bgColor}; color: ${categoryColors.textColor};">${capitalizeFirst(product.category || "")}</span></td>
             <td>$${(Number(product.price) || 0).toFixed(2)}</td>
             <td><span class="quantity-badge ${Number(product.quantity) < 20 ? "low" : "good"}">${escapeHtml(String(product.quantity || 0))}</span></td>
             <td>${escapeHtml(product.supplier || "")}</td>
@@ -91,8 +120,8 @@ function loadProducts(filteredProducts = null) {
                 </div>
             </td>
         </tr>
-    `,
-		)
+    `;
+		})
 		.join("");
 }
 
@@ -124,8 +153,7 @@ function handleFilter() {
 		filtered = filtered.filter((p) => p.category === categoryFilter);
 
 	if (supplierFilter) {
-		const supplierName = getSupplierName(supplierFilter);
-		filtered = filtered.filter((p) => p.supplier === supplierName);
+		filtered = filtered.filter((p) => p.supplier === supplierFilter);
 	}
 
 	loadProducts(filtered);
@@ -169,12 +197,13 @@ function editProduct(id) {
 		document.getElementById("productId").value = product.id || "";
 		document.getElementById("productName").value = product.name || "";
 		document.getElementById("productSKU").value = product.sku || "";
-		document.getElementById("productCategory").value = product.category || "";
+		document.getElementById("productCategory").value =
+			product.category || "";
 		document.getElementById("productPrice").value = product.price || 0;
-		document.getElementById("productQuantity").value = product.quantity || 0;
-		document.getElementById("productSupplier").value = getSupplierValue(
-			product.supplier || "",
-		);
+		document.getElementById("productQuantity").value =
+			product.quantity || 0;
+		document.getElementById("productSupplier").value =
+			product.supplier || "";
 		document.getElementById("productDescription").value =
 			product.description || "";
 		const deleteBtn = document.getElementById("deleteProductBtn");
@@ -349,26 +378,6 @@ function replaceOrAddLocalProduct(product) {
 }
 
 // Helper functions (page-specific)
-function getSupplierName(value) {
-	const suppliers = {
-		"tech-supplies": "Tech Supplies Co.",
-		electroparts: "ElectroParts Ltd.",
-		"keyboard-masters": "KeyBoard Masters",
-		"vision-tech": "Vision Tech",
-	};
-	return suppliers[value] || value;
-}
-
-function getSupplierValue(name) {
-	const suppliers = {
-		"Tech Supplies Co.": "tech-supplies",
-		"ElectroParts Ltd.": "electroparts",
-		"KeyBoard Masters": "keyboard-masters",
-		"Vision Tech": "vision-tech",
-	};
-	return suppliers[name] || "";
-}
-
 function capitalizeFirst(str) {
 	if (!str) return "";
 	return String(str).charAt(0).toUpperCase() + String(str).slice(1);

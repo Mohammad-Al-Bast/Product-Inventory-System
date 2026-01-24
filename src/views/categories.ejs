@@ -1,0 +1,89 @@
+<% title = 'Categories - Product Inventory System'; pageScript = '/js/categories.js'; %>
+
+    <script>
+        // Initialize categories data from server
+        window.categoriesData = <%- JSON.stringify(categories) %>;
+    </script>
+
+    <!-- Sidebar Navigation -->
+    <%- include('partials/sidebar', { active: 'categories' }) %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <%- include('partials/header', { pageTitle: 'Categories', pageSubtitle: 'Manage your product categories' }) %>
+
+        <!-- Categories Controls -->
+        <section class="controls-section">
+            <div class="controls-left">
+                <div class="search-box-large">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="categorySearch" placeholder="Search categories by name...">
+                </div>
+                <div class="filter-group">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <button class="btn-filter" id="clearFilters">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+            <div class="controls-right">
+                <button class="btn-primary" id="addCategoryBtn">
+                    <i class="fas fa-plus"></i> Add Category
+                </button>
+            </div>
+        </section>
+
+        <!-- Categories Grid -->
+        <section class="categories-grid" id="categoriesGrid">
+            <% if (categories && categories.length > 0) { %>
+                <% categories.forEach(category => { %>
+                    <div class="category-card" data-category-id="<%= category.id %>">
+                        <div class="category-header" style="background-color: <%= category.color || '#3498db' %>">
+                            <div class="category-icon">
+                                <i class="fas <%= category.icon || 'fa-tag' %>"></i>
+                            </div>
+                            <div class="category-actions">
+                                <button class="btn-icon edit" onclick="editCategory(<%= category.id %>)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteCategory(<%= category.id %>)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="category-body">
+                            <h3><%= category.name %></h3>
+                            <% if (category.description) { %>
+                                <p class="category-description"><%= category.description %></p>
+                            <% } %>
+                            <div class="category-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value <%= category.status === 'active' ? 'active' : 'inactive' %>">
+                                        <%= category.status ? category.status.charAt(0).toUpperCase() + category.status.slice(1) : 'Active' %>
+                                    </span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value"><%= new Date(category.createdAt).toLocaleDateString() %></span>
+                                    <span class="stat-label">Created</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <p>No categories found. Add your first category to get started!</p>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('partials/modals/categoryModal') %>
+
+    <%- include('partials/modals/deleteModal') %>

@@ -2,6 +2,7 @@ import express from "express";
 import connectDatabase from "./src/config/database.js";
 import productRouter from "./src/routers/product.js";
 import supplierRouter from "./src/routers/supplier.js";
+import categoryRouter from "./src/routers/category.js";
 import { getDashboard } from "./src/controllers/dashboard.controller.js";
 import expressEjsLayouts from "express-ejs-layouts";
 
@@ -23,6 +24,7 @@ app.set("layout", "layouts/main");
 app.get("/", getDashboard);
 app.use("/products", productRouter);
 app.use("/suppliers", supplierRouter);
+app.use("/categories", categoryRouter);
 
 // Connect to the database
 connectDatabase(connectionString);
