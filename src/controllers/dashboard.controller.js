@@ -1,11 +1,13 @@
 import productModel from "../models/product.model.js";
 import supplierModel from "../models/supplier.model.js";
+import categoryModel from "../models/category.model.js";
 
 const getDashboard = async (req, res) => {
 	try {
-		// Fetch all products and suppliers
+		// Fetch all products, suppliers, and categories
 		const products = await productModel.find().lean();
 		const suppliers = await supplierModel.find().lean();
+		const categories = await categoryModel.find().lean();
 
 		// Calculate statistics
 		const totalProducts = products.length;
@@ -33,6 +35,34 @@ const getDashboard = async (req, res) => {
 		const suggestedItems = lowStockItems
 			.sort((a, b) => a.quantity - b.quantity)
 			.slice(0, 4);
+
+		// Category distribution for pie chart
+		const categoryDistribution = {};
+		products.forEach((product) => {
+			const cat = product.category || "Uncategorized";
+			categoryDistribution[cat] = (categoryDistribution[cat] || 0) + 1;
+		});
+
+		// Stock levels for bar chart (top 10 products by quantity)
+		const stockLevels = products
+			.sort((a, b) => b.quantity - a.quantity)
+			.slice(0, 8)
+			.map((p) => ({
+				name:
+					p.name.length > 15
+						? p.name.substring(0, 15) + "..."
+						: p.name,
+				quantity: p.quantity,
+				isLow: p.quantity < 20,
+			}));
+
+		// Inventory value by category for doughnut chart
+		const valueByCategory = {};
+		products.forEach((product) => {
+			const cat = product.category || "Uncategorized";
+			valueByCategory[cat] =
+				(valueByCategory[cat] || 0) + product.price * product.quantity;
+		});
 
 		// Recent transactions would come from a transactions collection
 		// For now, we'll create mock data based on recent product updates
@@ -64,6 +94,11 @@ const getDashboard = async (req, res) => {
 			alerts,
 			suggestedItems,
 			recentTransactions,
+			chartData: {
+				categoryDistribution,
+				stockLevels,
+				valueByCategory,
+			},
 			info: {
 				title: "Dashboard",
 			},
