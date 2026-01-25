@@ -8,6 +8,8 @@
             lowStockItems: <%= stats.lowStockCount %>,
             inventoryValue: <%= stats.inventoryValue %>
         };
+        // Chart data from server
+        window.chartData = <%- JSON.stringify(chartData) %>;
     </script>
 
     <!-- Sidebar Navigation -->
@@ -15,7 +17,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <%- include('partials/header', { pageTitle: 'Dashboard', pageSubtitle: 'Welcome back, Mohammad!' }) %>
+        <%- include('partials/header', { pageTitle: 'Dashboard', pageSubtitle: 'Welcome back' }) %>
 
         <!-- Statistics Cards -->
         <section class="stats-grid">
@@ -73,6 +75,26 @@
             </div>
         </section>
 
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-pie"></i> Products by Category</h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-bar"></i> Stock Levels</h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="stockChart"></canvas>
+                </div>
+            </div>
+        </section>
+
         <!-- Low Stock Alerts -->
         <section class="alert-section" id="alerts">
             <div class="section-header">
@@ -111,10 +133,37 @@
             </div>
             <div class="suggested-grid" id="suggestedGrid">
                 <% if (suggestedItems && suggestedItems.length > 0) { %>
+                    <% 
+                    // Helper functions for product avatars
+                    function getInitials(name) {
+                        if (!name) return "?";
+                        const words = name.trim().split(/\s+/);
+                        if (words.length === 1) {
+                            return words[0].substring(0, 2).toUpperCase();
+                        }
+                        return (words[0][0] + words[1][0]).toUpperCase();
+                    }
+                    
+                    function getColorFromString(str) {
+                        const colors = [
+                            "#0F2854", "#1C4D8D", "#4988C4", "#2563eb", 
+                            "#7c3aed", "#db2777", "#059669", "#d97706",
+                            "#dc2626", "#0891b2", "#4f46e5", "#7c2d12"
+                        ];
+                        if (!str) return colors[0];
+                        let hash = 0;
+                        for (let i = 0; i < str.length; i++) {
+                            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                        return colors[Math.abs(hash) % colors.length];
+                    }
+                    %>
                     <% suggestedItems.forEach(product => { %>
                         <div class="product-card">
                             <div class="product-image">
-                                <img src="https://via.placeholder.com/200x200/4f46e5/ffffff?text=<%= encodeURIComponent(product.name.substring(0, 10)) %>" alt="<%= product.name %>">
+                                <div class="product-avatar" style="background-color: <%= getColorFromString(product.name) %>;">
+                                    <span class="product-initials"><%= getInitials(product.name) %></span>
+                                </div>
                                 <span class="product-badge low">Low Stock</span>
                             </div>
                             <div class="product-info">
