@@ -67,8 +67,8 @@ function loadSuppliers(filteredSuppliers = null) {
 			(supplier) => `
         <div class="supplier-card" data-supplier-id="${supplier.id}">
             <div class="supplier-header">
-                <div class="supplier-avatar">
-                    <i class="fas fa-building"></i>
+                <div class="supplier-avatar" style="background: ${getColorFromString(supplier.name)};">
+                    <span class="supplier-initials">${getInitials(supplier.name)}</span>
                 </div>
                 <div class="supplier-actions">
                     <button class="btn-icon edit" onclick="editSupplier(${supplier.id})">
@@ -141,8 +141,8 @@ function handleFilter() {
 		return;
 	}
 
-	const cityName = getCityName(cityFilter);
-	const filtered = suppliers.filter((s) => s.city === cityName);
+	// Filter by city name directly (value from dropdown is now the actual city name)
+	const filtered = suppliers.filter((s) => s.city === cityFilter);
 	loadSuppliers(filtered);
 }
 
@@ -273,12 +273,16 @@ function handleSupplierSubmit(e) {
 		.then((response) => response.json())
 		.then((data) => {
 			if (data.success) {
-				window.location.reload();
+				const message = currentSupplierId
+					? "Supplier updated successfully!"
+					: "Supplier added successfully!";
+				Toast.success(message);
+				setTimeout(() => window.location.reload(), 1000);
 			}
 		})
 		.catch((error) => {
 			console.error("Error saving supplier:", error);
-			alert("Error saving supplier. Please try again.");
+			Toast.error("Error saving supplier. Please try again.");
 		});
 }
 
@@ -303,12 +307,13 @@ function confirmDelete() {
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.success) {
-					window.location.reload();
+					Toast.success("Supplier deleted successfully!");
+					setTimeout(() => window.location.reload(), 1000);
 				}
 			})
 			.catch((error) => {
 				console.error("Error deleting supplier:", error);
-				alert("Error deleting supplier. Please try again.");
+				Toast.error("Error deleting supplier. Please try again.");
 			});
 	}
 	closeDeleteModal();

@@ -225,15 +225,18 @@ async function handleCategorySubmit(e) {
 
 		const result = await response.json();
 		if (result.success) {
+			const message = currentCategoryId
+				? "Category updated successfully!"
+				: "Category added successfully!";
+			Toast.success(message);
 			closeCategoryModal();
-			// Reload page to show updated data
-			window.location.reload();
+			setTimeout(() => window.location.reload(), 1000);
 		} else {
-			alert("Error saving category. Please try again.");
+			Toast.error("Error saving category. Please try again.");
 		}
 	} catch (error) {
 		console.error("Error:", error);
-		alert("Error saving category. Please try again.");
+		Toast.error("Error saving category. Please try again.");
 	}
 }
 
@@ -262,14 +265,15 @@ async function confirmDelete() {
 
 		const result = await response.json();
 		if (result.success) {
+			Toast.success("Category deleted successfully!");
 			closeDeleteModal();
-			window.location.reload();
+			setTimeout(() => window.location.reload(), 1000);
 		} else {
-			alert("Error deleting category. Please try again.");
+			Toast.error("Error deleting category. Please try again.");
 		}
 	} catch (error) {
 		console.error("Error:", error);
-		alert("Error deleting category. Please try again.");
+		Toast.error("Error deleting category. Please try again.");
 	}
 }
 

@@ -99,7 +99,7 @@ function loadProducts(filteredProducts = null) {
         <tr>
             <td>
                 <div class="product-cell">
-                    <img src="https://via.placeholder.com/40x40/4f46e5/ffffff?text=P" alt="Product">
+                    ${createInitialsAvatar(product.name, 40)}
                     <span>${escapeHtml(product.name)}</span>
                 </div>
             </td>
@@ -212,7 +212,7 @@ function editProduct(id) {
 		if (productModal) productModal.classList.add("active");
 	} catch (err) {
 		console.error("Error editing product:", err);
-		alert("Failed to edit product. Please try again.");
+		Toast.error("Failed to load product. Please try again.");
 	}
 }
 
@@ -274,6 +274,7 @@ async function handleProductSubmit(e) {
 			const data = await resp.json();
 			if (data && data.success && data.product) {
 				replaceOrAddLocalProduct(data.product);
+				Toast.success("Product updated successfully!");
 			}
 		} else {
 			// create
@@ -288,11 +289,12 @@ async function handleProductSubmit(e) {
 			const data = await resp.json();
 			if (data && data.success && data.product) {
 				replaceOrAddLocalProduct(data.product);
+				Toast.success("Product added successfully!");
 			}
 		}
 	} catch (err) {
 		console.error(err);
-		alert("Failed to save product. Please try again.");
+		Toast.error("Failed to save product. Please try again.");
 	}
 
 	loadProducts();
@@ -329,9 +331,11 @@ async function confirmDelete() {
 				(p) => String(p.id) !== String(currentProductId),
 			);
 			loadProducts();
+			Toast.success("Product deleted successfully!");
 		}
 	} catch (err) {
 		console.error(err);
+		Toast.error("Failed to delete product. Please try again.");
 	}
 	closeDeleteModal();
 }
